@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use SebastianBergmann\Environment\Runtime;
-
 /**
  * Default utility for PHP sub-processes.
  *
@@ -20,21 +18,21 @@ class PHPUnit_Util_PHP_Default extends PHPUnit_Util_PHP
     /**
      * Runs a single job (PHP code) using a separate PHP process.
      *
-     * @param  string                      $job
-     * @param  array                       $settings
+     * @param string $job
+     * @param array  $settings
+     *
      * @return array
+     *
      * @throws PHPUnit_Framework_Exception
      */
     public function runJob($job, array $settings = [])
     {
-        $runtime = new Runtime;
-
         $process = proc_open(
-            $runtime->getBinary() . $this->settingsToParameters($settings),
+            $this->getCommand($settings),
             [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w']
             ],
             $pipes
         );
@@ -61,9 +59,11 @@ class PHPUnit_Util_PHP_Default extends PHPUnit_Util_PHP
     }
 
     /**
-     * @param  resource                    $pipe
-     * @param  string                      $job
+     * @param resource $pipe
+     * @param string   $job
+     *
      * @throws PHPUnit_Framework_Exception
+     *
      * @since Method available since Release 3.5.12
      */
     protected function process($pipe, $job)
